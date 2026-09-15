@@ -1,6 +1,7 @@
 import ast
 
 from codeguard.rules.eval_rule import check_eval
+from codeguard.rules.os_system_rule import check_os_system
 
 def scan_file(file_path):
     findings = []
@@ -16,4 +17,8 @@ def scan_file(file_path):
         if finding is not None:
             findings.append(finding)
 
+        finding = check_os_system(node)
+
+        if finding is not None:
+            findings.append(finding)
     return findings
