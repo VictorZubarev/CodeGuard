@@ -1,5 +1,7 @@
 import ast
 
+from codeguard.rules.eval_rule import check_eval
+
 def scan_file(file_path):
     findings = []
 
@@ -9,15 +11,9 @@ def scan_file(file_path):
     tree = ast.parse(source_code, filename=file_path)
 
     for node in ast.walk(tree):
-        if isinstance(node, ast.Call):
-            if isinstance(node.func, ast.Name) and node.func.id == "eval":
-                findings.append(
-                    {
-                        "rule": "CG001",
-                        "severity": "HIGH",
-                        "message": "Use of eval() can execute arbitrary Python code.",
-                        "line": node.lineno,
-                    }
-                )
+        finding = check_eval(node)
+
+        if finding is not None:
+            findings.append(finding)
 
     return findings
