@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codeguard"
+version = "0.1.0"
+description = "Open-source security analyzer for Python code"
+readme = "README.md"
+requires-python = ">=3.14"
+
+[project.scripts]
+codeguard = "codeguard.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

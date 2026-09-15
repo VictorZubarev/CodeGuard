@@ -1,12 +1,51 @@
+import argparse
+
 from codeguard.scanner import scan_file
 
-file_path = "tests/test_vulnerable.py"
+def main():
+    parser = argparse.ArgumentParser(
+        prog="codeguard",
+        description="Security analyzer for Python code.",
+    )
 
-findings = scan_file(file_path)
+    parser.add_argument(
+        "command",
+        choices=["scan"],
+        help="Command to execute.",
+    )
 
-for finding in findings:
-    print(f"[{finding['severity']}] {finding['rule']} — {finding['message']}")
-    print(f"Line: {finding['line']}")
+    parser.add_argument(
+        "path",
+        help="Python file to scan.",
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "scan":
+        findings = scan_file(args.path)
+
+        if not findings:
+            print("No security findings.")
+            return
+
+        print("CodeGuard Security Report")
+        print()
+
+        for finding in findings:
+            print(
+                f"[{finding['severity']}] "
+                f"{finding['rule']} — "
+                f"{finding['message']}"
+            )
+            print(f"Line: {finding['line']}")
+            print()
+
+if __name__ == "__main__":
+    main()
+
+
+
+
 
 
 
