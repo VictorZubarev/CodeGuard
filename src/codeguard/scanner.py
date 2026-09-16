@@ -1,7 +1,6 @@
 import ast
 
-from codeguard.rules.eval_rule import check_eval
-from codeguard.rules.os_system_rule import check_os_system
+from codeguard.rules import RULES
 
 def scan_file(file_path):
     findings = []
@@ -12,13 +11,10 @@ def scan_file(file_path):
     tree = ast.parse(source_code, filename=file_path)
 
     for node in ast.walk(tree):
-        finding = check_eval(node)
+        for rule in RULES:
+            finding = rule(node)
 
-        if finding is not None:
-            findings.append(finding)
+            if finding is not None:
+                findings.append(finding)
 
-        finding = check_os_system(node)
-
-        if finding is not None:
-            findings.append(finding)
     return findings
