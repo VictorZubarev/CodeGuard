@@ -1,6 +1,6 @@
 import argparse
 
-from codeguard.scanner import scan_file
+from codeguard.scanner import scan_path
 
 def main():
     parser = argparse.ArgumentParser(
@@ -16,13 +16,13 @@ def main():
 
     parser.add_argument(
         "path",
-        help="Python file to scan.",
+        help="Python file or directory to scan.",
     )
 
     args = parser.parse_args()
 
     if args.command == "scan":
-        findings = scan_file(args.path)
+        findings = scan_path(args.path)
 
         if not findings:
             print("No security findings.")
@@ -37,16 +37,9 @@ def main():
                 f"{finding['rule']} — "
                 f"{finding['message']}"
             )
+            print(f"File: {finding['file']}")
             print(f"Line: {finding['line']}")
             print()
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-

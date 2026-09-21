@@ -1,6 +1,15 @@
 import ast
+from pathlib import Path
 
 from codeguard.rules import RULES
+
+EXCLUDED_DIRECTORIES = {
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+}
 
 def scan_file(file_path):
     findings = []
@@ -15,6 +24,29 @@ def scan_file(file_path):
             finding = rule(node)
 
             if finding is not None:
+                finding["file"] = str(file_path)
                 findings.append(finding)
 
     return findings
+
+def scan_path(path):
+    path = Path(path)
+
+    if path.is_file():
+        return scan_file(path)
+
+    if path.is_dir():
+        findings = []
+
+        for file_path in path.rglob("*.py"):
+            if any(
+                excluded_directory in file_path.parts
+                for excluded_directory in EXCLUDED_DIRECTORIES
+            ):
+                continue
+
+            findings.extend(scan_file(file_path))
+
+        return findings
+
+    raise FileNotFoundError(f"Path not found: {path}")
