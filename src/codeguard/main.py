@@ -22,7 +22,11 @@ def main():
     args = parser.parse_args()
 
     if args.command == "scan":
-        findings = scan_path(args.path)
+        try:
+            findings = scan_path(args.path)
+        except FileNotFoundError as error:
+            print(f"Error: {error}")
+            return
 
         if not findings:
             print("No security findings.")
@@ -43,3 +47,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
