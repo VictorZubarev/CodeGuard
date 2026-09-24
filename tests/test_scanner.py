@@ -76,6 +76,43 @@ def test_directory_scanning_excludes_venv(tmp_path):
     assert len(findings) == 1
     assert findings[0]["rule"] == "CG002"
     assert findings[0]["file"] == str(dangerous_file)
+def test_scan_file_invalid_syntax(tmp_path):
+    test_file = tmp_path / "broken.py"
+    test_file.write_text(
+        "def broken(:\n"
+        "    pass\n",
+        encoding="utf-8",
+    )
+
+    try:
+        scan_file(str(test_file))
+    except SyntaxError:
+        return
+
+    assert False, "scan_file() should raise SyntaxError for invalid Python"
+def test_directory_scanning_skips_invalid_python(tmp_path):
+    project_dir = tmp_path / "project"
+    project_dir.mkdir()
+
+    dangerous_file = project_dir / "dangerous.py"
+    dangerous_file.write_text(
+        "import os\n"
+        "os.system('echo hello')\n",
+        encoding="utf-8",
+    )
+
+    broken_file = project_dir / "broken.py"
+    broken_file.write_text(
+        "def broken(:\n"
+        "    pass\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_path(project_dir)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG002"
+    assert findings[0]["file"] == str(dangerous_file)
 
 
 

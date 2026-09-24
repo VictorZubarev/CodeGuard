@@ -45,8 +45,13 @@ def scan_path(path):
             ):
                 continue
 
-            findings.extend(scan_file(file_path))
+            try:
+                findings.extend(scan_file(file_path))
+            except SyntaxError:
+                continue
 
         return findings
 
     raise FileNotFoundError(f"Path not found: {path}")
+
+
