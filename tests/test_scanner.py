@@ -113,6 +113,19 @@ def test_directory_scanning_skips_invalid_python(tmp_path):
     assert len(findings) == 1
     assert findings[0]["rule"] == "CG002"
     assert findings[0]["file"] == str(dangerous_file)
+def test_detect_exec(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "exec('print(hello)')\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG004"
+    assert findings[0]["severity"] == "HIGH"
+    assert findings[0]["line"] == 1
 
 
 

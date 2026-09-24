@@ -11,13 +11,13 @@ fix security problems.
 CodeGuard is intended to become a real long-term open-source project,
 not a temporary portfolio project.
 
-## Current stage
+## Current Stage
 
 Security analyzer MVP — early development.
 
 ## Completed
 
-### Project foundation
+### Project Foundation
 
 - GitHub repository created
 - Git repository initialized
@@ -32,25 +32,30 @@ Security analyzer MVP — early development.
 - Virtual environment created
 - Editable package installation configured
 
-### CodeGuard architecture
+### CodeGuard Architecture
 
 - Python package structure created under `src/codeguard`
 - Security rules separated into individual modules
-- Central RULES registry created
+- Central `RULES` registry created
 - AST-based source-code analysis implemented
 
-### Security rules
+### Security Rules
 
-- CG001 — unsafe `eval()` usage
-- CG002 — `os.system()` usage
-- CG003 — `subprocess` with `shell=True`
+- `CG001` — unsafe `eval()` usage
+- `CG002` — `os.system()` usage
+- `CG003` — `subprocess` with `shell=True`
+- `CG004` — unsafe `exec()` usage
 
 ### Testing
 
 - pytest configured and working
-- Tests for all current security rules created
+- Tests for all four security rules created
 - Safe subprocess usage has a negative test
-- Current test suite passes
+- Directory scanning has automated test coverage
+- CLI error handling has automated test coverage
+- Invalid Python syntax during directory scanning has automated test coverage
+- Current test suite contains 9 tests
+- Current test suite passes: 9/9
 
 ### CLI
 
@@ -68,8 +73,9 @@ The CLI can:
 - show message
 - show affected file
 - show affected line
+- report a clear error when the specified path does not exist
 
-### Directory scanning
+### Directory Scanning
 
 Directory scanning is implemented.
 
@@ -84,23 +90,26 @@ CodeGuard automatically skips:
 This prevents the analyzer from scanning its own virtual environment
 and build/cache files.
 
-## Current task
+When scanning a directory, CodeGuard continues analyzing other Python files
+if an individual file contains invalid Python syntax.
+
+## Current Task
 
 Continue improving the CodeGuard security analyzer.
 
 The immediate development direction is:
 
-1. verify directory scanning;
-2. commit and push the directory-scanning changes;
-3. improve CLI behavior;
-4. add more security rules;
-5. improve tests and reduce false positives.
+1. add additional security rules;
+2. improve test coverage;
+3. investigate false positives and false negatives;
+4. improve CLI usability;
+5. improve the analyzer architecture;
+6. keep significant changes documented and traceable in Git.
 
-## Next planned security rules
+## Next Planned Security Rules
 
 Potential next rules include:
 
-- `exec()`
 - hardcoded secrets
 - unsafe deserialization
 - dangerous YAML usage
@@ -110,7 +119,7 @@ Potential next rules include:
 Rules should be added together with tests and documented in the changelog
 when appropriate.
 
-## Long-term direction
+## Long-Term Direction
 
 CodeGuard is planned to gradually develop into a developer-focused
 security platform with:
@@ -129,7 +138,7 @@ security platform with:
 - possible VS Code integration
 - research and benchmarking of AI-generated Python code
 
-## Research direction
+## Research Direction
 
 A long-term research direction is the security analysis of
 AI-generated Python code, including:
@@ -143,7 +152,7 @@ AI-generated Python code, including:
 
 Potential future research may lead to technical publications.
 
-## Development principle
+## Development Principle
 
 Every significant feature should have:
 
@@ -155,7 +164,21 @@ Every significant feature should have:
 Important development decisions, features, releases, research work,
 and real-world usage should be preserved in the project history.
 
-## Recovery instructions
+## Repository
+
+
+Status
+
+The GitHub repository is currently private.
+
+The project should remain private during early development while the MVP
+is being stabilized.
+
+A future public release should be prepared only after the project has
+a sufficiently coherent MVP, including stable core functionality,
+tests, documentation, examples, and an initial release.
+
+## Recovery Instructions
 
 If the development chat is lost, use this file as the current project state.
 
@@ -169,4 +192,4 @@ and ask the assistant to read:
 - ROADMAP.md
 - CHANGELOG.md
 
-Then continue from the "Current task" section above.
+Then continue from the `Current Task` section above.
