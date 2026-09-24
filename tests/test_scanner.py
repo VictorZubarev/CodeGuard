@@ -1,4 +1,4 @@
-from codeguard.scanner import scan_file
+from codeguard.scanner import scan_file, scan_path
 
 def test_detect_eval():
     findings = scan_file("tests/vulnerable_example.py")
@@ -49,6 +49,33 @@ def test_ignore_safe_subprocess(tmp_path):
     findings = scan_file(str(test_file))
 
     assert findings == []
+
+def test_directory_scanning_excludes_venv(tmp_path):
+    project_dir = tmp_path / "project"
+    project_dir.mkdir()
+
+    dangerous_file = project_dir / "dangerous.py"
+    dangerous_file.write_text(
+        "import os\n"
+        "os.system('echo hello')\n",
+        encoding="utf-8",
+    )
+
+    venv_dir = project_dir / ".venv"
+    venv_dir.mkdir()
+
+    excluded_file = venv_dir / "dangerous.py"
+    excluded_file.write_text(
+        "import os\n"
+        "os.system('echo hello')\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_path(project_dir)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG002"
+    assert findings[0]["file"] == str(dangerous_file)
 
 
 
