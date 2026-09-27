@@ -18,5 +18,7 @@ All notable changes to CodeGuard will be documented here.
 
 ### Testing
 
-- Expanded the test suite to 9 tests.
+- Expanded the test suite to 14 tests.
 - Added positive and negative test coverage for security rules and scanning behavior.
+- Added additional test coverage for `subprocess` command execution patterns, including `Popen()`, `call()`, and `check_output()` with `shell=True`.
+- Added negative test coverage for `subprocess` usage with `shell=False` and without the `shell` argument.

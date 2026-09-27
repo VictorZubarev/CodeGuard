@@ -50,6 +50,30 @@ def test_ignore_safe_subprocess(tmp_path):
 
     assert findings == []
 
+def test_ignore_subprocess_shell_false(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "import subprocess\n"
+        "subprocess.run('echo hello', shell=False)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
+def test_ignore_subprocess_without_shell(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "import subprocess\n"
+        "subprocess.run(['echo', 'hello'])\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
 def test_directory_scanning_excludes_venv(tmp_path):
     project_dir = tmp_path / "project"
     project_dir.mkdir()
@@ -127,5 +151,47 @@ def test_detect_exec(tmp_path):
     assert findings[0]["severity"] == "HIGH"
     assert findings[0]["line"] == 1
 
+def test_detect_subprocess_popen_shell_true(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import subprocess\n"
+        "subprocess.Popen('echo hello', shell=True)\n",
+        encoding="utf-8",
+    )
 
+    findings = scan_file(str(test_file))
 
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG003"
+    assert findings[0]["severity"] == "HIGH"
+    assert findings[0]["line"] == 2
+
+def test_detect_subprocess_call_shell_true(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import subprocess\n"
+        "subprocess.call('echo hello', shell=True)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG003"
+    assert findings[0]["severity"] == "HIGH"
+    assert findings[0]["line"] == 2
+
+def test_detect_subprocess_check_output_shell_true(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import subprocess\n"
+        "subprocess.check_output('echo hello', shell=True)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG003"
+    assert findings[0]["severity"] == "HIGH"
+    assert findings[0]["line"] == 2

@@ -54,8 +54,11 @@ Security analyzer MVP — early development.
 - Directory scanning has automated test coverage
 - CLI error handling has automated test coverage
 - Invalid Python syntax during directory scanning has automated test coverage
-- Current test suite contains 9 tests
-- Current test suite passes: 9/9
+- `subprocess` security detection has positive and negative test coverage
+- Tests cover `shell=True`, `shell=False`, and missing `shell` arguments
+- Tests cover multiple supported `subprocess` functions
+- Current test suite contains 14 tests
+- Current test suite passes: 14/14
 
 ### CLI
 
