@@ -29,14 +29,15 @@ def scan_file(file_path):
 
     return findings
 
-def scan_path(path):
+def _scan_path_with_stats(path):
     path = Path(path)
 
     if path.is_file():
-        return scan_file(path)
+        return scan_file(path), 1
 
     if path.is_dir():
         findings = []
+        files_scanned = 0
 
         for file_path in path.rglob("*.py"):
             if any(
@@ -45,13 +46,27 @@ def scan_path(path):
             ):
                 continue
 
+            files_scanned += 1
+
             try:
                 findings.extend(scan_file(file_path))
             except SyntaxError:
                 continue
 
-        return findings
+        return findings, files_scanned
 
     raise FileNotFoundError(f"Path not found: {path}")
+
+def scan_path(path):
+    findings, _ = _scan_path_with_stats(path)
+    return findings
+
+def scan_path_with_stats(path):
+    return _scan_path_with_stats(path)
+
+
+
+
+
 
 
