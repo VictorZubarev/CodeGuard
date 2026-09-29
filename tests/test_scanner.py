@@ -266,3 +266,58 @@ obj.run("ls", shell=True)
     findings = scan_file(file_path)
 
     assert findings == []
+
+def test_detect_hardcoded_api_key():
+    source = """
+API_KEY = "secret-api-key"
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG005"
+    assert findings[0]["severity"] == "HIGH"
+
+def test_detect_hardcoded_password():
+    source = """
+PASSWORD = "super-secret-password"
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG005"
+    assert findings[0]["severity"] == "HIGH"
+
+def test_ignore_normal_string_variable():
+    source = """
+message = "hello"
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []
+
+def test_ignore_username_variable():
+    source = """
+username = "admin"
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []
+
+
+
