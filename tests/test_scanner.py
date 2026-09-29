@@ -1,3 +1,6 @@
+import ast
+from pathlib import Path
+
 from codeguard.scanner import scan_file, scan_path
 
 def test_detect_eval():
@@ -195,3 +198,71 @@ def test_detect_subprocess_check_output_shell_true(tmp_path):
     assert findings[0]["rule"] == "CG003"
     assert findings[0]["severity"] == "HIGH"
     assert findings[0]["line"] == 2
+
+def test_ignore_os_system_on_other_object():
+    source = """
+class Example:
+    def system(self, command):
+        pass
+
+obj = Example()
+obj.system("ls")
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []
+
+def test_ignore_eval_on_other_object():
+    source = """
+class Example:
+    def eval(self, value):
+        return value
+
+obj = Example()
+obj.eval("test")
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []
+
+def test_ignore_exec_on_other_object():
+    source = """
+class Example:
+    def exec(self, value):
+        return value
+
+obj = Example()
+obj.exec("test")
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []        \
+
+def test_ignore_other_object_run_shell_true():
+    source = """
+class Example:
+    def run(self, command, shell=False):
+        pass
+
+obj = Example()
+obj.run("ls", shell=True)
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []
