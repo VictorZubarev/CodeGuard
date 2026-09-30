@@ -319,5 +319,59 @@ username = "admin"
 
     assert findings == []
 
+def test_detect_lowercase_api_key():
+    source = """
+api_key = "secret-api-key"
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG005"
+
+def test_detect_token():
+    source = """
+token = "secret-token-value"
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "CG005"
+
+def test_ignore_empty_password():
+    source = """
+PASSWORD = ""
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []
+
+def test_ignore_generic_password_value():
+    source = """
+PASSWORD = "password"
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []
+
+
+
+
+
 
 
