@@ -13,7 +13,10 @@ not a temporary portfolio project.
 
 ## Current Stage
 
-Security analyzer MVP — early development.
+Security Analyzer MVP — release preparation for `v0.1.0`.
+
+The core analyzer, CLI, tests, CI, documentation, and project licensing
+are in place.
 
 ## Completed
 
@@ -22,15 +25,16 @@ Security analyzer MVP — early development.
 - GitHub repository created
 - Git repository initialized
 - GitHub remote configured
-- README created
+- README created and updated for the MVP release
 - PROJECT_PLAN.md created
 - ROADMAP.md created
-- CHANGELOG.md created
+- CHANGELOG.md created and updated for `v0.1.0`
 - .gitignore created
 - pyproject.toml created
 - Python 3.14 development environment configured
 - Virtual environment created
 - Editable package installation configured
+- Apache License 2.0 added
 
 ### CodeGuard Architecture
 
@@ -104,18 +108,48 @@ and build/cache files.
 When scanning a directory, CodeGuard continues analyzing other Python files
 if an individual file contains invalid Python syntax.
 
+### Continuous Integration
+
+GitHub Actions CI is configured.
+
+The CI workflow:
+
+- runs on pushes;
+- runs on pull requests;
+- installs the project;
+- installs pytest;
+- runs the test suite.
+
+### Documentation
+
+The project currently includes:
+
+- README.md
+- PROJECT_STATE.md
+- PROJECT_PLAN.md
+- ROADMAP.md
+- CHANGELOG.md
+- LICENSE
+
+The README contains installation instructions,
+usage examples, supported security rules, development instructions,
+and project direction.
+
 ## Current Task
 
-Continue improving the CodeGuard security analyzer.
+Prepare the CodeGuard MVP for the first public release.
 
-The immediate development direction is:
+The immediate release-preparation tasks are:
 
-1. add additional security rules;
-2. improve test coverage;
-3. investigate false positives and false negatives;
-4. improve CLI usability;
-5. improve the analyzer architecture;
-6. keep significant changes documented and traceable in Git.
+1. keep project documentation consistent with the current implementation;
+2. review the roadmap and development plan;
+3. verify the complete test suite;
+4. verify the CLI behavior;
+5. review the README and examples;
+6. verify the repository is clean;
+7. create the `v0.1.0` Git tag;
+8. prepare the GitHub release;
+9. make the repository public when the MVP is ready.
 
 ## Next Planned Security Rules
 
@@ -179,12 +213,11 @@ and real-world usage should be preserved in the project history.
 
 The GitHub repository is currently private.
 
-The project should remain private during early development while the MVP
-is being stabilized.
+The repository is being prepared for the first public MVP release,
+`v0.1.0`.
 
-A future public release should be prepared only after the project has
-a sufficiently coherent MVP, including stable core functionality,
-tests, documentation, examples, and an initial release.
+The repository should become public only after the MVP has been reviewed
+and the initial release artifacts have been prepared.
 
 ## Recovery Instructions
 
