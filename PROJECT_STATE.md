@@ -38,6 +38,7 @@ Security analyzer MVP — early development.
 - Security rules separated into individual modules
 - Central `RULES` registry created
 - AST-based source-code analysis implemented
+- Scan statistics are collected during scanning
 
 ### Security Rules
 
@@ -45,20 +46,23 @@ Security analyzer MVP — early development.
 - `CG002` — `os.system()` usage
 - `CG003` — `subprocess` with `shell=True`
 - `CG004` — unsafe `exec()` usage
+- `CG005` — possible hardcoded secrets
 
 ### Testing
 
 - pytest configured and working
-- Tests for all four security rules created
-- Safe subprocess usage has a negative test
+- Tests for all five security rules created
+- Positive and negative test coverage for security rules
+- Safe subprocess usage has negative tests
 - Directory scanning has automated test coverage
 - CLI error handling has automated test coverage
 - Invalid Python syntax during directory scanning has automated test coverage
 - `subprocess` security detection has positive and negative test coverage
 - Tests cover `shell=True`, `shell=False`, and missing `shell` arguments
 - Tests cover multiple supported `subprocess` functions
-- Current test suite contains 14 tests
-- Current test suite passes: 14/14
+- Hardcoded secret detection has positive and negative test coverage
+- Current test suite contains 27 tests
+- Current test suite passes: 27/27
 
 ### CLI
 
@@ -77,6 +81,10 @@ The CLI can:
 - show affected file
 - show affected line
 - report a clear error when the specified path does not exist
+- report the number of scanned files
+- report the total number of findings
+- report findings grouped by severity
+- display a report when no security findings are detected
 
 ### Directory Scanning
 
@@ -113,11 +121,11 @@ The immediate development direction is:
 
 Potential next rules include:
 
-- hardcoded secrets
 - unsafe deserialization
 - dangerous YAML usage
 - SQL injection patterns
 - improved command-injection detection
+- additional hardcoded credential patterns
 
 Rules should be added together with tests and documented in the changelog
 when appropriate.
@@ -167,10 +175,7 @@ Every significant feature should have:
 Important development decisions, features, releases, research work,
 and real-world usage should be preserved in the project history.
 
-## Repository
-
-
-Status
+## Repository Status
 
 The GitHub repository is currently private.
 
