@@ -2,9 +2,15 @@
 
 Open-source security analyzer for Python code.
 
+CodeGuard uses AST-based static analysis to detect potentially dangerous
+patterns in Python source code and report security findings with
+rule IDs, severity levels, file paths, and line numbers.
+
 ## Status
 
 Early development — Security Analyzer MVP.
+
+Current version: `0.1.0`
 
 ## Goal
 
@@ -36,7 +42,24 @@ CodeGuard can:
 - scan directories recursively;
 - automatically skip `.git`, `.venv`, `__pycache__`, `build`, and `dist`;
 - continue directory scanning when an individual Python file has invalid syntax;
-- report the rule ID, severity, message, file, and line number.
+- report the rule ID, severity, message, file, and line number;
+- report the number of scanned files;
+- report the total number of findings;
+- group findings by severity.
+
+## Installation
+
+Clone the repository:
+
+    git clone https://github.com/VictorZubarev/CodeGuard.git
+
+Enter the project directory:
+
+    cd CodeGuard
+
+Install CodeGuard in editable mode:
+
+    py -3.14 -m pip install -e .
 
 ## Usage
 
@@ -56,14 +79,38 @@ Example output:
     File: tests\vulnerable_example.py
     Line: 3
 
+    Summary:
+    Files scanned: 1
+    Findings: 1
+    HIGH: 1
+
+When no security findings are detected, CodeGuard reports:
+
+    CodeGuard Security Report
+
+    No security findings.
+
+    Summary:
+    Files scanned: 1
+    Findings: 0
+
 ## Development
 
-Install the project in editable mode and run the test suite with:
+Install the project in editable mode:
+
+    py -3.14 -m pip install -e .
+
+Run the test suite:
 
     py -3.14 -m pytest
 
-The current test suite covers security rules, safe cases,
-directory scanning, CLI behavior, and invalid Python syntax handling.
+The current test suite contains 27 tests covering security rules,
+safe cases, directory scanning, CLI behavior, and invalid Python syntax.
+
+## Continuous Integration
+
+CodeGuard uses GitHub Actions to automatically run the test suite
+on pushes and pull requests.
 
 ## Project Direction
 
@@ -97,3 +144,7 @@ Significant features should have:
 - traceable Git history.
 
 The project source code and Git history are the primary record of development.
+
+## License
+
+CodeGuard is licensed under the Apache License 2.0.
