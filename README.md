@@ -26,6 +26,7 @@ CodeGuard currently provides AST-based static analysis for Python code.
 | CG002 | `os.system()` usage | HIGH |
 | CG003 | `subprocess` with `shell=True` | HIGH |
 | CG004 | Unsafe `exec()` usage | HIGH |
+| CG005 | Possible hardcoded secret | HIGH |
 
 ### Scanning
 
