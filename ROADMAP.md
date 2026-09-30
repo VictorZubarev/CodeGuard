@@ -31,8 +31,8 @@
 - [x] Add positive and negative security-rule tests
 - [x] Reach 27 passing automated tests
 - [x] Prepare MVP documentation
-- [ ] Create `v0.1.0` Git tag
-- [ ] Create GitHub release
+- [x] Create `v0.1.0` Git tag
+- [x] Create GitHub release
 - [ ] Publish the repository
 
 ## Phase 3 — Detection Quality and Advanced Analysis
