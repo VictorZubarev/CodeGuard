@@ -13,7 +13,9 @@ not a temporary portfolio project.
 
 ## Current Stage
 
-Security Analyzer MVP — release preparation for `v0.1.0`.
+Security Analyzer MVP — `v0.1.0` released.
+
+The first public MVP release has been published on GitHub.
 
 The core analyzer, CLI, tests, CI, documentation, and project licensing
 are in place.
@@ -211,13 +213,12 @@ and real-world usage should be preserved in the project history.
 
 ## Repository Status
 
-The GitHub repository is currently private.
+The GitHub repository is public.
 
-The repository is being prepared for the first public MVP release,
-`v0.1.0`.
+The first public MVP release, `v0.1.0`, has been created and published.
 
-The repository should become public only after the MVP has been reviewed
-and the initial release artifacts have been prepared.
+The repository, GitHub release, Git tag, source code, tests,
+documentation, and Git history are the primary record of the project.
 
 ## Recovery Instructions
 
