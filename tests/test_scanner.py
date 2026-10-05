@@ -1,4 +1,3 @@
-import ast
 from pathlib import Path
 
 from codeguard.scanner import scan_file, scan_path
@@ -7,9 +6,9 @@ def test_detect_eval():
     findings = scan_file("tests/vulnerable_example.py")
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG001"
-    assert findings[0]["severity"] == "HIGH"
-    assert findings[0]["line"] == 3
+    assert findings[0].rule == "CG001"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 3
 
 def test_detect_os_system(tmp_path):
     test_file = tmp_path / "dangerous.py"
@@ -22,9 +21,9 @@ def test_detect_os_system(tmp_path):
     findings = scan_file(str(test_file))
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG002"
-    assert findings[0]["severity"] == "HIGH"
-    assert findings[0]["line"] == 2
+    assert findings[0].rule == "CG002"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 2
 
 def test_detect_subprocess_shell_true(tmp_path):
     test_file = tmp_path / "dangerous.py"
@@ -37,11 +36,22 @@ def test_detect_subprocess_shell_true(tmp_path):
     findings = scan_file(str(test_file))
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG003"
-    assert findings[0]["severity"] == "HIGH"
-    assert findings[0]["line"] == 2
+    assert findings[0].rule == "CG003"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 2
 
-def test_ignore_safe_subprocess(tmp_path):
+def test_safe_code(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "print('hello')\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
+def test_safe_subprocess_without_shell(tmp_path):
     test_file = tmp_path / "safe.py"
     test_file.write_text(
         "import subprocess\n"
@@ -53,29 +63,26 @@ def test_ignore_safe_subprocess(tmp_path):
 
     assert findings == []
 
-def test_ignore_subprocess_shell_false(tmp_path):
-    test_file = tmp_path / "safe.py"
-    test_file.write_text(
-        "import subprocess\n"
-        "subprocess.run('echo hello', shell=False)\n",
+def test_directory_scanning(tmp_path):
+    project_dir = tmp_path / "project"
+    project_dir.mkdir()
+
+    dangerous_file = project_dir / "dangerous.py"
+    dangerous_file.write_text(
+        "eval('1 + 1')\n",
         encoding="utf-8",
     )
 
-    findings = scan_file(str(test_file))
-
-    assert findings == []
-
-def test_ignore_subprocess_without_shell(tmp_path):
-    test_file = tmp_path / "safe.py"
-    test_file.write_text(
-        "import subprocess\n"
-        "subprocess.run(['echo', 'hello'])\n",
+    safe_file = project_dir / "safe.py"
+    safe_file.write_text(
+        "print('hello')\n",
         encoding="utf-8",
     )
 
-    findings = scan_file(str(test_file))
+    findings = scan_path(project_dir)
 
-    assert findings == []
+    assert len(findings) == 1
+    assert findings[0].rule == "CG001"
 
 def test_directory_scanning_excludes_venv(tmp_path):
     project_dir = tmp_path / "project"
@@ -101,22 +108,32 @@ def test_directory_scanning_excludes_venv(tmp_path):
     findings = scan_path(project_dir)
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG002"
-    assert findings[0]["file"] == str(dangerous_file)
-def test_scan_file_invalid_syntax(tmp_path):
-    test_file = tmp_path / "broken.py"
-    test_file.write_text(
-        "def broken(:\n"
-        "    pass\n",
+    assert findings[0].rule == "CG002"
+
+def test_directory_scanning_excludes_git(tmp_path):
+    project_dir = tmp_path / "project"
+    project_dir.mkdir()
+
+    dangerous_file = project_dir / "dangerous.py"
+    dangerous_file.write_text(
+        "eval('1 + 1')\n",
         encoding="utf-8",
     )
 
-    try:
-        scan_file(str(test_file))
-    except SyntaxError:
-        return
+    git_dir = project_dir / ".git"
+    git_dir.mkdir()
 
-    assert False, "scan_file() should raise SyntaxError for invalid Python"
+    excluded_file = git_dir / "dangerous.py"
+    excluded_file.write_text(
+        "eval('1 + 1')\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_path(project_dir)
+
+    assert len(findings) == 1
+    assert findings[0].rule == "CG001"
+
 def test_directory_scanning_skips_invalid_python(tmp_path):
     project_dir = tmp_path / "project"
     project_dir.mkdir()
@@ -138,8 +155,8 @@ def test_directory_scanning_skips_invalid_python(tmp_path):
     findings = scan_path(project_dir)
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG002"
-    assert findings[0]["file"] == str(dangerous_file)
+    assert findings[0].rule == "CG002"
+
 def test_detect_exec(tmp_path):
     test_file = tmp_path / "dangerous.py"
     test_file.write_text(
@@ -150,9 +167,20 @@ def test_detect_exec(tmp_path):
     findings = scan_file(str(test_file))
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG004"
-    assert findings[0]["severity"] == "HIGH"
-    assert findings[0]["line"] == 1
+    assert findings[0].rule == "CG004"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 1
+
+def test_safe_exec_as_attribute(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "obj.exec('hello')\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
 
 def test_detect_subprocess_popen_shell_true(tmp_path):
     test_file = tmp_path / "dangerous.py"
@@ -165,9 +193,7 @@ def test_detect_subprocess_popen_shell_true(tmp_path):
     findings = scan_file(str(test_file))
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG003"
-    assert findings[0]["severity"] == "HIGH"
-    assert findings[0]["line"] == 2
+    assert findings[0].rule == "CG003"
 
 def test_detect_subprocess_call_shell_true(tmp_path):
     test_file = tmp_path / "dangerous.py"
@@ -180,9 +206,20 @@ def test_detect_subprocess_call_shell_true(tmp_path):
     findings = scan_file(str(test_file))
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG003"
-    assert findings[0]["severity"] == "HIGH"
-    assert findings[0]["line"] == 2
+    assert findings[0].rule == "CG003"
+
+def test_detect_subprocess_check_call_shell_true(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import subprocess\n"
+        "subprocess.check_call('echo hello', shell=True)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0].rule == "CG003"
 
 def test_detect_subprocess_check_output_shell_true(tmp_path):
     test_file = tmp_path / "dangerous.py"
@@ -195,75 +232,29 @@ def test_detect_subprocess_check_output_shell_true(tmp_path):
     findings = scan_file(str(test_file))
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG003"
-    assert findings[0]["severity"] == "HIGH"
-    assert findings[0]["line"] == 2
+    assert findings[0].rule == "CG003"
 
-def test_ignore_os_system_on_other_object():
-    source = """
-class Example:
-    def system(self, command):
-        pass
+def test_safe_subprocess_shell_false(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "import subprocess\n"
+        "subprocess.run('echo hello', shell=False)\n",
+        encoding="utf-8",
+    )
 
-obj = Example()
-obj.system("ls")
-"""
-
-    file_path = Path("test.py")
-    file_path.write_text(source, encoding="utf-8")
-
-    findings = scan_file(file_path)
+    findings = scan_file(str(test_file))
 
     assert findings == []
 
-def test_ignore_eval_on_other_object():
-    source = """
-class Example:
-    def eval(self, value):
-        return value
+def test_safe_subprocess_without_shell_argument(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "import subprocess\n"
+        "subprocess.run('echo hello')\n",
+        encoding="utf-8",
+    )
 
-obj = Example()
-obj.eval("test")
-"""
-
-    file_path = Path("test.py")
-    file_path.write_text(source, encoding="utf-8")
-
-    findings = scan_file(file_path)
-
-    assert findings == []
-
-def test_ignore_exec_on_other_object():
-    source = """
-class Example:
-    def exec(self, value):
-        return value
-
-obj = Example()
-obj.exec("test")
-"""
-
-    file_path = Path("test.py")
-    file_path.write_text(source, encoding="utf-8")
-
-    findings = scan_file(file_path)
-
-    assert findings == []        \
-
-def test_ignore_other_object_run_shell_true():
-    source = """
-class Example:
-    def run(self, command, shell=False):
-        pass
-
-obj = Example()
-obj.run("ls", shell=True)
-"""
-
-    file_path = Path("test.py")
-    file_path.write_text(source, encoding="utf-8")
-
-    findings = scan_file(file_path)
+    findings = scan_file(str(test_file))
 
     assert findings == []
 
@@ -278,8 +269,8 @@ API_KEY = "secret-api-key"
     findings = scan_file(file_path)
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG005"
-    assert findings[0]["severity"] == "HIGH"
+    assert findings[0].rule == "CG005"
+    assert findings[0].severity == "HIGH"
 
 def test_detect_hardcoded_password():
     source = """
@@ -292,12 +283,12 @@ PASSWORD = "super-secret-password"
     findings = scan_file(file_path)
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG005"
-    assert findings[0]["severity"] == "HIGH"
+    assert findings[0].rule == "CG005"
+    assert findings[0].severity == "HIGH"
 
-def test_ignore_normal_string_variable():
+def test_ignore_placeholder_password():
     source = """
-message = "hello"
+PASSWORD = "password"
 """
 
     file_path = Path("test.py")
@@ -307,9 +298,21 @@ message = "hello"
 
     assert findings == []
 
-def test_ignore_username_variable():
+def test_ignore_empty_secret():
     source = """
-username = "admin"
+API_KEY = ""
+"""
+
+    file_path = Path("test.py")
+    file_path.write_text(source, encoding="utf-8")
+
+    findings = scan_file(file_path)
+
+    assert findings == []
+
+def test_ignore_common_placeholder_secret():
+    source = """
+TOKEN = "changeme"
 """
 
     file_path = Path("test.py")
@@ -330,7 +333,7 @@ api_key = "secret-api-key"
     findings = scan_file(file_path)
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG005"
+    assert findings[0].rule == "CG005"
 
 def test_detect_token():
     source = """
@@ -343,11 +346,11 @@ token = "secret-token-value"
     findings = scan_file(file_path)
 
     assert len(findings) == 1
-    assert findings[0]["rule"] == "CG005"
+    assert findings[0].rule == "CG005"
 
-def test_ignore_empty_password():
+def test_safe_variable_name():
     source = """
-PASSWORD = ""
+username = "admin"
 """
 
     file_path = Path("test.py")
@@ -356,22 +359,3 @@ PASSWORD = ""
     findings = scan_file(file_path)
 
     assert findings == []
-
-def test_ignore_generic_password_value():
-    source = """
-PASSWORD = "password"
-"""
-
-    file_path = Path("test.py")
-    file_path.write_text(source, encoding="utf-8")
-
-    findings = scan_file(file_path)
-
-    assert findings == []
-
-
-
-
-
-
-

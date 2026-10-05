@@ -24,7 +24,7 @@ def scan_file(file_path):
             finding = rule(node)
 
             if finding is not None:
-                finding["file"] = str(file_path)
+                finding.file = str(file_path)
                 findings.append(finding)
 
     return findings

@@ -1,5 +1,7 @@
 import ast
 
+from codeguard.models import Finding
+
 def check_subprocess(node):
     if not isinstance(node, ast.Call):
         return None
@@ -19,12 +21,12 @@ def check_subprocess(node):
     for keyword in node.keywords:
         if keyword.arg == "shell":
             if isinstance(keyword.value, ast.Constant) and keyword.value.value is True:
-                return {
-                    "rule": "CG003",
-                    "severity": "HIGH",
-                    "message": "Using subprocess with shell=True can allow command injection.",
-                    "line": node.lineno,
-                }
+                return Finding(
+                    rule="CG003",
+                    severity="HIGH",
+                    message="Using subprocess with shell=True can allow command injection.",
+                    line=node.lineno,
+                )
 
     return None
 

@@ -42,17 +42,16 @@ def main():
 
         for finding in findings:
             print(
-                f"[{finding['severity']}] "
-                f"{finding['rule']} — "
-                f"{finding['message']}"
+                f"[{finding.severity}] "
+                f"{finding.rule} — "
+                f"{finding.message}"
             )
-            print(f"File: {finding['file']}")
-            print(f"Line: {finding['line']}")
-            print()
+            print(f"File: {finding.file}")
+            print(f"Line: {finding.line}")
 
         severity_counts = Counter(
-            finding["severity"]
-            for finding in findings
+        finding.severity
+        for finding in findings
         )
 
         print("Summary:")
