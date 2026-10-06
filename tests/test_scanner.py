@@ -359,3 +359,131 @@ username = "admin"
     findings = scan_file(file_path)
 
     assert findings == []
+
+def test_detect_pickle_loads(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import pickle\n"
+        "data = pickle.loads(user_data)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0].rule == "CG006"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 2
+
+def test_detect_pickle_load(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import pickle\n"
+        "data = pickle.load(file_object)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0].rule == "CG006"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 2
+
+def test_safe_non_pickle_load(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "data = json.loads(user_data)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []   
+
+def test_detect_yaml_load(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import yaml\n"
+        "data = yaml.load(user_data)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0].rule == "CG007"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 2
+
+def test_safe_yaml_safe_load(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "import yaml\n"
+        "data = yaml.safe_load(user_data)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
+def test_safe_non_yaml_load(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "data = json.load(file_object)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
+def test_detect_md5(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import hashlib\n"
+        "digest = hashlib.md5(data)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0].rule == "CG008"
+    assert findings[0].severity == "MEDIUM"
+    assert findings[0].line == 2
+
+def test_detect_sha1(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "import hashlib\n"
+        "digest = hashlib.sha1(data)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0].rule == "CG008"
+    assert findings[0].severity == "MEDIUM"
+    assert findings[0].line == 2
+
+def test_safe_sha256(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        "import hashlib\n"
+        "digest = hashlib.sha256(data)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
+
+
+
+
+
+ 
