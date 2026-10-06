@@ -48,10 +48,16 @@ def main():
             )
             print(f"File: {finding.file}")
             print(f"Line: {finding.line}")
+            print(f"CWE: {finding.metadata.cwe}")
+            print(
+                f"Recommendation: "
+                f"{finding.metadata.recommendation}"
+            )
+            print()
 
         severity_counts = Counter(
-        finding.severity
-        for finding in findings
+            finding.severity
+            for finding in findings
         )
 
         print("Summary:")
@@ -63,13 +69,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-

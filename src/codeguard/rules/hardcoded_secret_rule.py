@@ -2,7 +2,7 @@ import ast
 
 from codeguard.models import Finding
 
-SECRET_NAMES = {
+SECRET_KEYWORDS = {
     "api_key",
     "apikey",
     "secret",
@@ -24,6 +24,19 @@ IGNORED_SECRET_VALUES = {
     "your_token",
 }
 
+def _looks_like_secret_name(name):
+    normalized_name = name.lower()
+
+    if normalized_name in SECRET_KEYWORDS:
+        return True
+
+    parts = normalized_name.split("_")
+
+    return any(
+        part in {"password", "passwd", "secret", "token"}
+        for part in parts
+    )
+
 def check_hardcoded_secret(node):
     if not isinstance(node, ast.Assign):
         return None
@@ -43,7 +56,7 @@ def check_hardcoded_secret(node):
         if not isinstance(target, ast.Name):
             continue
 
-        if target.id.lower() not in SECRET_NAMES:
+        if not _looks_like_secret_name(target.id):
             continue
 
         return Finding(
@@ -54,5 +67,3 @@ def check_hardcoded_secret(node):
         )
 
     return None
-
-

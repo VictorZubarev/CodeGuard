@@ -481,6 +481,102 @@ def test_safe_sha256(tmp_path):
 
     assert findings == []
 
+def test_detect_hardcoded_password(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        'password = "hunter2"\n',
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+    assert findings[0].rule == "CG005"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 1
+
+def test_ignore_placeholder_password(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        'password = "password"\n',
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
+def test_ignore_empty_password(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        'password = ""\n',
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
+def test_ignore_normal_variable(tmp_path):
+    test_file = tmp_path / "safe.py"
+    test_file.write_text(
+        'username = "victor"\n',
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert findings == []
+
+def test_detect_secret_in_compound_name(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        'db_password = "super_secret_password"\n'
+        'github_token = "ghp_example_token"\n',
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 2
+
+    assert findings[0].rule == "CG005"
+    assert findings[0].severity == "HIGH"
+    assert findings[0].line == 1
+
+    assert findings[1].rule == "CG005"
+    assert findings[1].severity == "HIGH"
+    assert findings[1].line == 2
+
+def test_finding_has_rule_metadata(tmp_path):
+    test_file = tmp_path / "dangerous.py"
+    test_file.write_text(
+        "eval(user_input)\n",
+        encoding="utf-8",
+    )
+
+    findings = scan_file(str(test_file))
+
+    assert len(findings) == 1
+
+    finding = findings[0]
+
+    assert finding.rule == "CG001"
+    assert finding.metadata.name == "Use of eval()"
+    assert finding.metadata.severity == "HIGH"
+    assert finding.metadata.cwe == "CWE-95"
+    assert (
+        finding.metadata.recommendation
+        == "Avoid eval() and use safer alternatives for parsing or evaluating data."
+    )
+
+
+
+
+
+
+
+
 
 
 
