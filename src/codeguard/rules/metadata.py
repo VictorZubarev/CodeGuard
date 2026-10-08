@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-@dataclass(frozen=True)
+@dataclass (frozen=True)
 class RuleMetadata:
     rule_id: str
     name: str
@@ -8,12 +8,11 @@ class RuleMetadata:
     description: str
     cwe: str
     recommendation: str
-
 RULE_METADATA = {
     "CG001": RuleMetadata(
         rule_id="CG001",
         name="Use of eval()",
-        severity="HIGH",
+        severity="CRITICAL",
         description="Detects use of eval(), which can execute arbitrary Python code.",
         cwe="CWE-95",
         recommendation="Avoid eval() and use safer alternatives for parsing or evaluating data.",
@@ -37,7 +36,7 @@ RULE_METADATA = {
     "CG004": RuleMetadata(
         rule_id="CG004",
         name="Use of exec()",
-        severity="HIGH",
+        severity="CRITICAL",
         description="Detects use of exec(), which can execute arbitrary Python code.",
         cwe="CWE-95",
         recommendation="Avoid exec() and use safer alternatives.",

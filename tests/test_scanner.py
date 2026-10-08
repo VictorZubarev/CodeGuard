@@ -563,23 +563,30 @@ def test_finding_has_rule_metadata(tmp_path):
 
     assert finding.rule == "CG001"
     assert finding.metadata.name == "Use of eval()"
-    assert finding.metadata.severity == "HIGH"
+    assert finding.metadata.severity == "CRITICAL"
     assert finding.metadata.cwe == "CWE-95"
     assert (
         finding.metadata.recommendation
         == "Avoid eval() and use safer alternatives for parsing or evaluating data."
     )
 
+def test_all_rule_severities():
+    from codeguard.rules.metadata import RULE_METADATA
 
+    expected_severities = {
+        "CG001": "CRITICAL",
+        "CG002": "HIGH",
+        "CG003": "HIGH",
+        "CG004": "CRITICAL",
+        "CG005": "HIGH",
+        "CG006": "HIGH",
+        "CG007": "HIGH",
+        "CG008": "MEDIUM",
+    }
 
+    actual_severities = {
+        rule_id: metadata.severity
+        for rule_id, metadata in RULE_METADATA.items()
+    }
 
-
-
-
-
-
-
-
-
-
- 
+    assert actual_severities == expected_severities
