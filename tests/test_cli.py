@@ -48,5 +48,35 @@ def test_cli_severity_filter(capsys, monkeypatch):
     assert "[CRITICAL] CG001" in captured.out
     assert "CRITICAL: 1" in captured.out
 
+def test_cli_severity_filter_excludes_lower_severity(
+    capsys,
+    monkeypatch,
+    tmp_path,
+):
+    test_file = tmp_path / "example.py"
+    test_file.write_text(
+        "import hashlib\n"
+        "password = 'example-password'\n"
+        "hashlib.md5(b'data')\n",
+        encoding="utf-8",
+    )
 
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "codeguard",
+            "scan",
+            str(test_file),
+            "--severity",
+            "HIGH",
+        ],
+    )
 
+    main()
+
+    captured = capsys.readouterr()
+
+    assert "[HIGH] CG005" in captured.out
+    assert "[MEDIUM] CG008" not in captured.out
+    assert "Findings: 1" in captured.out
+    assert "HIGH: 1" in captured.out
