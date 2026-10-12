@@ -13,7 +13,7 @@ not a temporary portfolio project.
 
 ## Current Stage
 
-Security Analyzer — `v0.2.0` development.
+Security Analyzer — `v0.2.0` released.
 
 The first public MVP release, `v0.1.0`, has been published on GitHub.
 
@@ -21,7 +21,7 @@ The current development version includes eight security rules,
 rule metadata, severity filtering, automated tests, CI, and updated
 project documentation.
 
-The `v0.2.0` release has not yet been published.
+The `v0.2.0` release has been published on GitHub.
 
 ## Completed
 
@@ -84,8 +84,8 @@ A finding does not automatically prove that a vulnerability is exploitable.
 - Weak hash detection has positive and negative test coverage
 - Severity assignments have regression test coverage
 - CLI severity filtering has test coverage
-- Current test suite contains 42 tests
-- Latest reported test run passed: 42/42
+- Current test suite contains 43 tests
+- Latest reported test run passed: 43/43
 
 ### CLI
 
@@ -154,20 +154,10 @@ and the planned `v0.2.0` release.
 
 ## Current Task
 
-Prepare the next CodeGuard release, `v0.2.0`.
+The `v0.2.0` release has been published.
 
-The immediate tasks are:
-
-1. verify consistency across project documentation;
-2. review the implementation and security-rule behavior;
-3. verify the complete test suite;
-4. verify CLI severity filtering and report output;
-5. review the README and changelog;
-6. inspect the complete Git diff;
-7. confirm all intended changes are committed and pushed;
-8. decide when the release is ready;
-9. create the `v0.2.0` Git tag and GitHub release only after verification.
-
+The next task is to plan and implement `v0.3.0`, focusing on meaningful
+security-analysis improvements, appropriate tests, and documentation.
 ## Next Planned Improvements
 
 Potential areas for future work include:
