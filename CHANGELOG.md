@@ -2,7 +2,7 @@
 
 All notable changes to CodeGuard will be documented here.
 
-## [Unreleased]
+## [0.2.0] - 2026-10-13
 
 ### Added
 
@@ -21,7 +21,7 @@ All notable changes to CodeGuard will be documented here.
 
 ### Testing
 
-- Expanded the test suite to 42 tests.
+- Expanded the test suite to 43 tests.
 - Added coverage for pickle deserialization, YAML loading, and weak cryptographic hashes.
 - Added regression coverage for severity assignments and CLI severity filtering.
 
