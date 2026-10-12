@@ -11,9 +11,9 @@ and recommendations.
 
 Early development — Security Analyzer MVP.
 
-Latest released version: `0.1.0`
+Python security analyzer for detecting common vulnerabilities in Python code.
 
-The next release, `0.2.0`, is in development.
+Latest released version: 0.2.0
 
 ## Goal
 
