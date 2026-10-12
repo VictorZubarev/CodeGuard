@@ -7,7 +7,7 @@ def check_exec(node):
         if isinstance(node.func, ast.Name) and node.func.id == "exec":
             return Finding(
                 rule="CG004",
-                severity="HIGH",
+                severity="CRITICAL",
                 message="Use of exec() can execute arbitrary Python code.",
                 line=node.lineno,
             )

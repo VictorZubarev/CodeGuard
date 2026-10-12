@@ -13,30 +13,36 @@ not a temporary portfolio project.
 
 ## Current Stage
 
-Security Analyzer MVP — `v0.1.0` released.
+Security Analyzer — `v0.2.0` development.
 
-The first public MVP release has been published on GitHub.
+The first public MVP release, `v0.1.0`, has been published on GitHub.
 
-The core analyzer, CLI, tests, CI, documentation, and project licensing
-are in place.
+The current development version includes eight security rules,
+rule metadata, severity filtering, automated tests, CI, and updated
+project documentation.
+
+The `v0.2.0` release has not yet been published.
 
 ## Completed
 
 ### Project Foundation
 
-- GitHub repository created
+- GitHub repository created and made public
 - Git repository initialized
 - GitHub remote configured
-- README created and updated for the MVP release
+- README.md created and maintained
 - PROJECT_PLAN.md created
-- ROADMAP.md created
-- CHANGELOG.md created and updated for `v0.1.0`
+- ROADMAP.md created and maintained
+- CHANGELOG.md created and maintained
+- PROJECT_STATE.md created and maintained
 - .gitignore created
 - pyproject.toml created
 - Python 3.14 development environment configured
-- Virtual environment created
 - Editable package installation configured
 - Apache License 2.0 added
+- GitHub Actions CI configured
+- `v0.1.0` Git tag created
+- `v0.1.0` GitHub release published
 
 ### CodeGuard Architecture
 
@@ -44,31 +50,42 @@ are in place.
 - Security rules separated into individual modules
 - Central `RULES` registry created
 - AST-based source-code analysis implemented
-- Scan statistics are collected during scanning
+- Scan statistics collected during scanning
+- Rule metadata defined with IDs, names, severity levels,
+  descriptions, CWE identifiers, and recommendations
 
 ### Security Rules
 
-- `CG001` — unsafe `eval()` usage
-- `CG002` — `os.system()` usage
-- `CG003` — `subprocess` with `shell=True`
-- `CG004` — unsafe `exec()` usage
-- `CG005` — possible hardcoded secrets
+- `CG001` — unsafe `eval()` usage (`CRITICAL`)
+- `CG002` — `os.system()` usage (`HIGH`)
+- `CG003` — `subprocess` with `shell=True` (`HIGH`)
+- `CG004` — unsafe `exec()` usage (`CRITICAL`)
+- `CG005` — possible hardcoded secret (`HIGH`)
+- `CG006` — potentially unsafe pickle deserialization (`HIGH`)
+- `CG007` — potentially unsafe `yaml.load()` usage (`HIGH`)
+- `CG008` — weak cryptographic hash algorithms, including MD5 and SHA-1 (`MEDIUM`)
+
+These rules detect potentially dangerous code patterns.
+A finding does not automatically prove that a vulnerability is exploitable.
 
 ### Testing
 
 - pytest configured and working
-- Tests for all five security rules created
 - Positive and negative test coverage for security rules
 - Safe subprocess usage has negative tests
 - Directory scanning has automated test coverage
 - CLI error handling has automated test coverage
 - Invalid Python syntax during directory scanning has automated test coverage
-- `subprocess` security detection has positive and negative test coverage
-- Tests cover `shell=True`, `shell=False`, and missing `shell` arguments
-- Tests cover multiple supported `subprocess` functions
+- `subprocess` detection covers `shell=True`, `shell=False`,
+  missing `shell` arguments, and multiple supported functions
 - Hardcoded secret detection has positive and negative test coverage
-- Current test suite contains 27 tests
-- Current test suite passes: 27/27
+- Pickle deserialization detection has positive and negative test coverage
+- YAML loading detection has positive and negative test coverage
+- Weak hash detection has positive and negative test coverage
+- Severity assignments have regression test coverage
+- CLI severity filtering has test coverage
+- Current test suite contains 42 tests
+- Latest reported test run passed: 42/42
 
 ### CLI
 
@@ -81,16 +98,18 @@ The CLI can:
 - scan individual Python files
 - scan directories recursively
 - display security findings
-- show rule ID
-- show severity
-- show message
-- show affected file
-- show affected line
+- show rule IDs and severity levels
+- show finding messages, file paths, and line numbers
+- display CWE identifiers and remediation recommendations
 - report a clear error when the specified path does not exist
 - report the number of scanned files
 - report the total number of findings
 - report findings grouped by severity
 - display a report when no security findings are detected
+- filter findings using `--severity`
+
+The severity filter specifies a minimum level.
+For example, `--severity HIGH` includes `HIGH` and `CRITICAL` findings.
 
 ### Directory Scanning
 
@@ -104,9 +123,6 @@ CodeGuard automatically skips:
 - `build`
 - `dist`
 
-This prevents the analyzer from scanning its own virtual environment
-and build/cache files.
-
 When scanning a directory, CodeGuard continues analyzing other Python files
 if an individual file contains invalid Python syntax.
 
@@ -116,15 +132,15 @@ GitHub Actions CI is configured.
 
 The CI workflow:
 
-- runs on pushes;
-- runs on pull requests;
-- installs the project;
-- installs pytest;
-- runs the test suite.
+- runs on pushes
+- runs on pull requests
+- installs the project
+- installs pytest
+- runs the test suite
 
 ### Documentation
 
-The project currently includes:
+The project includes:
 
 - README.md
 - PROJECT_STATE.md
@@ -133,47 +149,48 @@ The project currently includes:
 - CHANGELOG.md
 - LICENSE
 
-The README contains installation instructions,
-usage examples, supported security rules, development instructions,
-and project direction.
+The documentation is being updated to reflect the current implementation
+and the planned `v0.2.0` release.
 
 ## Current Task
 
-Prepare the CodeGuard MVP for the first public release.
+Prepare the next CodeGuard release, `v0.2.0`.
 
-The immediate release-preparation tasks are:
+The immediate tasks are:
 
-1. keep project documentation consistent with the current implementation;
-2. review the roadmap and development plan;
+1. verify consistency across project documentation;
+2. review the implementation and security-rule behavior;
 3. verify the complete test suite;
-4. verify the CLI behavior;
-5. review the README and examples;
-6. verify the repository is clean;
-7. create the `v0.1.0` Git tag;
-8. prepare the GitHub release;
-9. make the repository public when the MVP is ready.
+4. verify CLI severity filtering and report output;
+5. review the README and changelog;
+6. inspect the complete Git diff;
+7. confirm all intended changes are committed and pushed;
+8. decide when the release is ready;
+9. create the `v0.2.0` Git tag and GitHub release only after verification.
 
-## Next Planned Security Rules
+## Next Planned Improvements
 
-Potential next rules include:
+Potential areas for future work include:
 
-- unsafe deserialization
-- dangerous YAML usage
-- SQL injection patterns
 - improved command-injection detection
-- additional hardcoded credential patterns
+- SQL injection detection research
+- reduction of false positives
+- investigation of false negatives
+- JSON and SARIF reporting
+- improved analyzer architecture
+- dependency security analysis
+- data-flow analysis
+- taint analysis
 
-Rules should be added together with tests and documented in the changelog
-when appropriate.
+New rules should include appropriate tests and documentation.
 
 ## Long-Term Direction
 
-CodeGuard is planned to gradually develop into a developer-focused
-security platform with:
+CodeGuard may gradually develop into a developer-focused security platform with:
 
 - source-code analysis
 - dependency security analysis
-- data-flow / taint analysis
+- data-flow and taint analysis
 - security findings with severity levels
 - useful remediation suggestions
 - verification of fixes
@@ -187,29 +204,29 @@ security platform with:
 
 ## Research Direction
 
-A long-term research direction is the security analysis of
-AI-generated Python code, including:
+A long-term research direction is security analysis of AI-generated Python code, including:
 
 - vulnerability detection
 - false-positive reduction
 - false-negative analysis
 - automated remediation
-- security benchmarking
+- reproducible security benchmarking
 - comparison of different detection approaches
 
-Potential future research may lead to technical publications.
+Any future research claims should be supported by reproducible methods
+and verifiable results.
 
 ## Development Principle
 
 Every significant feature should have:
 
-- a clear technical purpose;
-- tests;
-- documentation where appropriate;
-- a traceable Git history.
+- a clear technical purpose
+- appropriate automated tests
+- documentation where appropriate
+- a traceable Git history
 
 Important development decisions, features, releases, research work,
-and real-world usage should be preserved in the project history.
+and real-world usage should be recorded in the project history.
 
 ## Repository Status
 
@@ -217,8 +234,10 @@ The GitHub repository is public.
 
 The first public MVP release, `v0.1.0`, has been created and published.
 
-The repository, GitHub release, Git tag, source code, tests,
-documentation, and Git history are the primary record of the project.
+The `v0.2.0` release remains in development.
+
+The repository, source code, tests, documentation, Git history,
+Git tags, and GitHub releases are the primary record of the project.
 
 ## Recovery Instructions
 
@@ -227,7 +246,7 @@ If the development chat is lost, use this file as the current project state.
 The source code in the GitHub repository is the source of truth.
 
 To continue development in a new chat, provide the GitHub repository
-and ask the assistant to read:
+and review:
 
 - PROJECT_STATE.md
 - PROJECT_PLAN.md

@@ -2,6 +2,29 @@
 
 All notable changes to CodeGuard will be documented here.
 
+## [Unreleased]
+
+### Added
+
+- Added `CG006` to detect potentially unsafe `pickle.load()` and `pickle.loads()` usage.
+- Added `CG007` to detect potentially unsafe `yaml.load()` usage.
+- Added `CG008` to detect weak cryptographic hash algorithms, including MD5 and SHA-1.
+- Added rule metadata containing rule IDs, names, severity levels, descriptions, CWE identifiers, and recommendations.
+- Added `--severity` CLI option to filter findings by minimum severity level.
+
+### Improved
+
+- Introduced `CRITICAL`, `HIGH`, and `MEDIUM` severity levels.
+- Classified unsafe `eval()` and `exec()` usage as `CRITICAL`.
+- Improved hardcoded secret detection.
+- Expanded regression tests for security rules and CLI behavior.
+
+### Testing
+
+- Expanded the test suite to 42 tests.
+- Added coverage for pickle deserialization, YAML loading, and weak cryptographic hashes.
+- Added regression coverage for severity assignments and CLI severity filtering.
+
 ## [0.1.0] - Initial MVP Release
 
 ### Added

@@ -25,9 +25,28 @@ def test_cli_summary(capsys, monkeypatch):
     assert "CodeGuard Security Report" in captured.out
     assert "Files scanned: 1" in captured.out
     assert "Findings: 1" in captured.out
-    assert "HIGH: 1" in captured.out
+    assert "CRITICAL: 1" in captured.out
 
+def test_cli_severity_filter(capsys, monkeypatch):
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "codeguard",
+            "scan",
+            "tests/vulnerable_example.py",
+            "--severity",
+            "HIGH",
+        ],
+    )
 
+    main()
+
+    captured = capsys.readouterr()
+
+    assert "CodeGuard Security Report" in captured.out
+    assert "Findings: 1" in captured.out
+    assert "[CRITICAL] CG001" in captured.out
+    assert "CRITICAL: 1" in captured.out
 
 
 

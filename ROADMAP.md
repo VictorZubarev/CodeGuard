@@ -3,6 +3,7 @@
 ## Phase 1 — Foundation
 
 - [x] Create GitHub repository
+- [x] Make the repository public
 - [x] Initialize Git
 - [x] Create initial README
 - [x] Create project plan
@@ -32,23 +33,27 @@
 - [x] Reach 27 passing automated tests
 - [x] Prepare MVP documentation
 - [x] Create `v0.1.0` Git tag
-- [x] Create GitHub release
-- [ ] Publish the repository
+- [x] Publish the `v0.1.0` GitHub release
+- [x] Publish the repository
 
-## Phase 3 — Detection Quality and Advanced Analysis
+## Phase 3 — Detection Quality and Rule Expansion
 
-- [ ] Add additional security rules
+- [x] Add unsafe deserialization detection (`CG006`)
+- [x] Add dangerous YAML loading detection (`CG007`)
+- [x] Add weak cryptographic hash detection (`CG008`)
+- [x] Introduce rule metadata with descriptions, CWE identifiers, and recommendations
+- [x] Classify `eval()` and `exec()` findings as `CRITICAL`
+- [x] Improve hardcoded credential detection for compound variable names and placeholder values
+- [x] Add regression tests for all rule severity assignments
+- [x] Add CLI severity filtering with `--severity`
+- [x] Reach 42 passing automated tests
 - [ ] Improve command-injection detection
-- [ ] Add unsafe deserialization detection
-- [ ] Add dangerous YAML usage detection
 - [ ] Investigate SQL injection patterns
-- [ ] Improve hardcoded credential detection
 - [ ] Reduce false positives
 - [ ] Investigate false negatives
-- [ ] Add regression test coverage
 - [ ] Improve analyzer architecture
 - [ ] Improve reporting
-- [ ] Add machine-readable output
+- [ ] Add machine-readable JSON output
 - [ ] Investigate dependency analysis
 - [ ] Investigate data-flow analysis
 - [ ] Investigate taint analysis

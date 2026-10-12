@@ -7,7 +7,7 @@ def test_detect_eval():
 
     assert len(findings) == 1
     assert findings[0].rule == "CG001"
-    assert findings[0].severity == "HIGH"
+    assert findings[0].severity == "CRITICAL"
     assert findings[0].line == 3
 
 def test_detect_os_system(tmp_path):
@@ -168,7 +168,7 @@ def test_detect_exec(tmp_path):
 
     assert len(findings) == 1
     assert findings[0].rule == "CG004"
-    assert findings[0].severity == "HIGH"
+    assert findings[0].severity == "CRITICAL"
     assert findings[0].line == 1
 
 def test_safe_exec_as_attribute(tmp_path):

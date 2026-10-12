@@ -4,19 +4,22 @@ Open-source security analyzer for Python code.
 
 CodeGuard uses AST-based static analysis to detect potentially dangerous
 patterns in Python source code and report security findings with
-rule IDs, severity levels, file paths, and line numbers.
+rule IDs, severity levels, file paths, line numbers, CWE identifiers,
+and recommendations.
 
 ## Status
 
 Early development — Security Analyzer MVP.
 
-Current version: `0.1.0`
+Latest released version: `0.1.0`
+
+The next release, `0.2.0`, is in development.
 
 ## Goal
 
 CodeGuard aims to detect security vulnerabilities in Python source code,
-help developers understand security findings, and eventually provide
-useful guidance for fixing them.
+help developers understand security findings, and provide practical
+guidance for fixing them.
 
 The project is being developed as a long-term open-source security tool.
 
@@ -26,13 +29,19 @@ CodeGuard currently provides AST-based static analysis for Python code.
 
 ### Security Rules
 
-| Rule | Description | Severity |
-|---|---|---|
-| CG001 | Unsafe `eval()` usage | HIGH |
-| CG002 | `os.system()` usage | HIGH |
-| CG003 | `subprocess` with `shell=True` | HIGH |
-| CG004 | Unsafe `exec()` usage | HIGH |
-| CG005 | Possible hardcoded secret | HIGH |
+| Rule | Description | Severity | CWE |
+|---|---|---|---|
+| CG001 | Unsafe `eval()` usage | CRITICAL | CWE-95 |
+| CG002 | `os.system()` usage | HIGH | CWE-78 |
+| CG003 | `subprocess` with `shell=True` | HIGH | CWE-78 |
+| CG004 | Unsafe `exec()` usage | CRITICAL | CWE-95 |
+| CG005 | Possible hardcoded secret | HIGH | CWE-798 |
+| CG006 | Potentially unsafe `pickle` deserialization | HIGH | CWE-502 |
+| CG007 | Potentially unsafe `yaml.load()` usage | HIGH | CWE-502 |
+| CG008 | Weak cryptographic hash algorithms, including MD5 and SHA-1 | MEDIUM | CWE-328 |
+
+These rules identify potentially dangerous code patterns. A finding
+does not automatically prove that a vulnerability is exploitable.
 
 ### Scanning
 
@@ -42,10 +51,11 @@ CodeGuard can:
 - scan directories recursively;
 - automatically skip `.git`, `.venv`, `__pycache__`, `build`, and `dist`;
 - continue directory scanning when an individual Python file has invalid syntax;
-- report the rule ID, severity, message, file, and line number;
-- report the number of scanned files;
-- report the total number of findings;
-- group findings by severity.
+- report rule IDs, severity levels, messages, file paths, and line numbers;
+- include CWE identifiers and remediation recommendations;
+- report the number of scanned files and findings;
+- group findings by severity;
+- filter findings by minimum severity.
 
 ## Installation
 
@@ -71,18 +81,40 @@ Scan a directory:
 
     py -3.14 -m codeguard.main scan path/to/project
 
-Example output:
+### Filter by Severity
+
+Show findings with severity `HIGH` or higher:
+
+    py -3.14 -m codeguard.main scan path/to/project --severity HIGH
+
+Show only `CRITICAL` findings:
+
+    py -3.14 -m codeguard.main scan path/to/project --severity CRITICAL
+
+Available severity levels, from lowest to highest:
+
+- `LOW`
+- `MEDIUM`
+- `HIGH`
+- `CRITICAL`
+
+The `--severity` option sets a minimum severity. For example, `HIGH`
+includes both `HIGH` and `CRITICAL` findings.
+
+### Example Output
 
     CodeGuard Security Report
 
-    [HIGH] CG001 — Use of eval() can execute arbitrary Python code.
+    [CRITICAL] CG001 — Use of eval() can execute arbitrary Python code.
     File: tests\vulnerable_example.py
     Line: 3
+    CWE: CWE-95
+    Recommendation: Avoid eval() and use safer alternatives for parsing or evaluating data.
 
     Summary:
     Files scanned: 1
     Findings: 1
-    HIGH: 1
+    CRITICAL: 1
 
 When no security findings are detected, CodeGuard reports:
 
@@ -104,8 +136,9 @@ Run the test suite:
 
     py -3.14 -m pytest
 
-The current test suite contains 27 tests covering security rules,
-safe cases, directory scanning, CLI behavior, and invalid Python syntax.
+The current test suite contains 42 tests covering security rules,
+safe cases, severity assignments, directory scanning, CLI behavior,
+and invalid Python syntax.
 
 ## Continuous Integration
 
@@ -118,14 +151,14 @@ CodeGuard is planned to gradually expand toward:
 
 - additional Python security rules;
 - improved false-positive reduction;
-- dependency security analysis;
 - data-flow and taint analysis;
+- dependency security analysis;
 - remediation suggestions;
+- structured JSON and SARIF reporting;
 - GitHub integration;
 - CI/CD integration;
-- GitHub Action;
-- SARIF reporting;
-- documentation website;
+- a dedicated GitHub Action;
+- a documentation website;
 - possible VS Code integration.
 
 A long-term research direction is security analysis of AI-generated
@@ -143,7 +176,8 @@ Significant features should have:
 - appropriate documentation;
 - traceable Git history.
 
-The project source code and Git history are the primary record of development.
+The project source code, tests, documentation, and Git history are
+the primary record of development.
 
 ## License
 
