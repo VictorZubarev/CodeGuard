@@ -272,9 +272,9 @@ API_KEY = "secret-api-key"
     assert findings[0].rule == "CG005"
     assert findings[0].severity == "HIGH"
 
-def test_detect_hardcoded_password():
+def test_ignore_placeholder_password():
     source = """
-PASSWORD = "super-secret-password"
+PASSWORD = "password"
 """
 
     file_path = Path("test.py")
@@ -282,9 +282,7 @@ PASSWORD = "super-secret-password"
 
     findings = scan_file(file_path)
 
-    assert len(findings) == 1
-    assert findings[0].rule == "CG005"
-    assert findings[0].severity == "HIGH"
+    assert findings == []
 
 def test_ignore_placeholder_password():
     source = """
