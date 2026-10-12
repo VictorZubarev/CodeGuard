@@ -14,28 +14,24 @@ maintainability, and useful security analysis over artificial metrics.
 
 ## Current Objective
 
-Complete and release `v0.2.0`.
+Plan and implement `v0.3.0`.
 
-The first public MVP release, `v0.1.0`, has already been published.
+The `v0.1.0` MVP and `v0.2.0` releases have been published.
 
-The current development version includes:
+The current implementation includes:
 
 - AST-based Python source-code analysis;
 - eight security rules (`CG001`–`CG008`);
 - structured rule metadata;
-- severity levels;
-- severity filtering in the CLI;
+- severity levels and CLI severity filtering;
 - recursive directory scanning;
-- handling of invalid Python syntax during directory scanning;
 - scan statistics and security recommendations;
-- automated tests;
-- GitHub Actions CI;
+- automated tests and GitHub Actions CI;
 - project documentation;
 - Apache License 2.0.
 
-The `v0.2.0` release must not be considered complete until
-the implementation, tests, documentation, package metadata,
-and release artifacts have been verified.
+The next release should focus on meaningful security-analysis
+improvements, supported by tests and accurate documentation.
 
 ## Development Priorities
 
@@ -194,12 +190,12 @@ CodeGuard uses versioned releases.
 ### Released
 
 - `v0.1.0` — initial public MVP release.
+- `v0.2.0` — eight security rules, rule metadata, severity
+  classification, CLI severity filtering, and expanded tests.
 
 ### In Development
 
-- `v0.2.0` — security-rule expansion, rule metadata, severity
-  classification, CLI severity filtering, regression coverage,
-  and documentation improvements.
+- `v0.3.0` — scope and implementation to be determined.
 
 A release should be published only after:
 
